@@ -1,14 +1,19 @@
 package Array;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Array {
-	/*
-	 * bài 1 có sử dụng đệ quy khá hữu ích
+	/* bài hữu ích:
+	 * bài 1 có sử dụng đệ quy khá hữu ích (đã được đưa về dạng tổng quát
+	 * 							để giải các bài tương tự)
+	 * bài 2: có quan hệ với bài 1 khá hay
 	 * 
+	 * 
+	 * bài dễ:
+	 * bài 3 (đọc bài 1 là đủ)
+	 * bài 4: sắp dãy nhị phân để các số 0 nằm hết về một phía
+	 * 					EZ quá bỏ
+	 * bài 5 (có 2 ý tưởng khá hay đọc chú thích để biết chi tiết =)) )
 	 */
 public static void main(String[] args) {
 		/* bai 1 và bài 2 gần giống nhau đều tìm một
@@ -21,8 +26,10 @@ public static void main(String[] args) {
 		 * cũng như có thể tối ưu bằng 1 for
 		 * 
 		 */
-		testbai1();
-		testbai2();
+//		testbai1();
+//		testbai2();
+		testbai5();
+		
 	}
 	/* find n node with given sum in an array
 	* hàm tìm tất cả targetCount cặp giá trị trong mảng thỏa mãn tổng sum cho trước 
@@ -154,7 +161,87 @@ public static void main(String[] args) {
 		bai2(A,6);
 		System.out.println("***** bai 2.3: tim day co tong bang 10");
 		bai2(A,10);
+	}
+	/* bài toán gốc là tìm trong dãy từ 1 .. đến n-1
+	 * phần tử bị lặp lại
+	 * 
+	 * Ý TƯỞNG 1: cũng khá ez là dùng một mảng boolean để lưu lại
+	 * các giá trị đã đi qua và kiểm tra khi bị lặp lại
+	 * 
+	 * Ý TƯỞNG 2: phần này còn có 1 ý tưởng khác khá nhanh
+	 * đó là theo toán học ta có công thức tính tổng dãy từ 1 .. n-1
+	 *  là n(n-1)/2 (gọi là tổng lý thuyết)
+	 * tính tổng của dãy dùng 1 for (gọi là tổng thực tế)
+	 * 
+	 ** sau đó lấy thực tế trừ đi lý thuyết để kiểm tra xem lệch nhau bn
+	 ** thì lượng lệch đó chính là giá trị cần tìm
+	 **    ý tưởng này còn có thể làm một số dạng như cho n tấm vé
+	 **    liên tiếp bị mất 1 vé tìm vé mất
+	 * 
+	 * nhưng ý tưởng này chỉ dành cho trường hợp đặc biệt là
+	 * dãy liên tiếp từ 1 đến n và chỉ có 1 cặp lặp
+	 * 
+	 * nên khi muốn tổng quát hơn nhiều cặp và các giá trị bất
+	 * kì lại không đúng
+	 * 
+	 * *** ta phát triển bài toán thành một mảng bất kì 
+	 * với các giá trị bất kì
+	 * 
+	 * vẫn theo ý tưởng trên cũng khá tốt
+	 * để thực hiện tuy nhiên nếu mảng đầu vào
+	 * phần tử lớn nhất có giá trị khá lớn sẽ dẫn đến
+	 * tốn bộ nhớ khi thực hiện
+	 * 
+	 * tuy nhiên mình chỉ cần 1 for để duyệt mảng thoy
+	 * nên sẽ nhanh hơn nếu phải sài 2 for hoặc while
+	 * lồng nhau
+	 * 
+	 *  cơ mà thoy kệ vẫn sài tốt =))
+	 * 
+	 * ý tưởng hàm là:
+	 * tìm giá trị lớn nhất trong mảng (1 for)
+	 * rồi thực hiện theo ý tưởng trên (1 for)
+	 * 
+	 * phần bài toán gốc được code trong hàm bai5_
+	 */
+	public static void bai5_(int[] array) {
+		int sum = 0;
+		for(int i:array) {
+			sum += i;
+		}
+		int out = sum - (array.length-1)*array.length/2;
+		System.out.println("giá trị bị lặp lại là: " + out);
 		
+	}
+	public static void bai5(int[] array) {
+		int max = array[0];
+		for(int i:array) {
+			if(i>max)
+				max = i;
+		}
 		
+		boolean[] visit = new boolean[max+1];
+		ArrayList<Integer> save = new ArrayList<Integer>();
+		
+		for(int i:array) {
+			if(visit[i]) {
+				save.add(i);
+			}
+			visit[i] = true;
+		}
+		System.out.print("các giá trị bị lặp lại là: ");
+		for(int i: save) {
+			System.out.print(" "+i);
+		}
+		System.out.println();
+	}
+	public static void testbai5() {
+		int[] ar = {1,2,3,4,5,4,6,7};
+		System.out.println("***** bai 5.1: phan tu lap 1 2 3 4 5 4 6 7");
+		bai5_(ar);
+		
+		int[] arr = {30,41,50,20,11,41,33,20,100,101,33};
+		System.out.println("***** bai 5.2: phan tu lap 30 41 50 20 11 41 33 20 100 101 33");
+		bai5(arr);
 	}
 }
