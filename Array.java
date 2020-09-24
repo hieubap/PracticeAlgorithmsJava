@@ -1,19 +1,29 @@
 package Array;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Array {
 	/* bài hữu ích:
 	 * bài 1 có sử dụng đệ quy khá hữu ích (đã được đưa về dạng tổng quát
 	 * 							để giải các bài tương tự)
 	 * bài 2: có quan hệ với bài 1 khá hay
-	 * 
+	 * bài 9: quicksort sắp xếp
+	 * bài 10,11 : mergesort
 	 * 
 	 * bài dễ:
 	 * bài 3 (đọc bài 1 là đủ)
 	 * bài 4: sắp dãy nhị phân để các số 0 nằm hết về một phía
 	 * 					EZ quá bỏ
 	 * bài 5 (có 2 ý tưởng khá hay đọc chú thích để biết chi tiết =)) )
+	 * bài 6: làm gần tương tự bài 2
+	 * bài 7: hiểu bài 2 là oke
+	 * 
+	 * bài 8: tìm 2 số để đc tích lớn nhất 
+	 * bài 12: tìm vị trí của 0 để có dãy nhị phân con có độ dài lớn nhất
+	 * bài 13: sáo trộn mảng
+	 * bài 14: sắp xếp chéo nhau (bỏ)
+	 * bài 15: tìm vị trí chia mảng thành hai phần có tổng bằng nhau
 	 */
 public static void main(String[] args) {
 		/* bai 1 và bài 2 gần giống nhau đều tìm một
@@ -28,7 +38,17 @@ public static void main(String[] args) {
 		 */
 //		testbai1();
 //		testbai2();
-		testbai5();
+//		testbai5();
+//		testbai6();
+//		testbai7();
+//		testbai8();
+//		testbai9();
+//		testbai10();
+		
+//		testbai12();
+//		testbai13();
+		testbai15();
+		
 		
 	}
 	/* find n node with given sum in an array
@@ -243,5 +263,268 @@ public static void main(String[] args) {
 		int[] arr = {30,41,50,20,11,41,33,20,100,101,33};
 		System.out.println("***** bai 5.2: phan tu lap 30 41 50 20 11 41 33 20 100 101 33");
 		bai5(arr);
+	}
+	public static void bai6(int[] A,int sumtarget) {
+		boolean none = true;// biến kiểm tra có tồn tại dãy hay không để in không tồn tại
+		int c=0,d=0;
+		for(int i=0;i<A.length;i++) {
+			int sum = 0;
+			
+			for(int j=i;j<A.length;j++) {
+				sum += A[j];
+				if(sum == sumtarget && (j - i) > (d - c)) {
+					none = false;
+					c = i;
+					d = j;
+				}
+			}
+		}
+		
+		if(none) {
+			System.out.println("khong ton tai day co tong bang "+sumtarget);
+		}
+		else {
+			System.out.print("[ ");
+			for(int k=c; k<=d ;k++) {
+				System.out.print(A[k]+" ");
+			}
+			System.out.println("]");
+		}
+	}
+	public static void testbai6() {
+		int[] array = {1,2,-4,5,6,7,9,1,2,3,4,5,1,-1,1,5};
+		System.out.println("***** bai 6.1: day co do dai lon nhat co tong bang 16 la");
+		bai6(array,16);
+		
+	}
+	/* đề là tìm dãy con lớn nhất có tổng các số 0 và số 1 bằng nhau
+	 * 
+	 * EZ dựa vào bài 2
+	 * nếu là 1 thì tổng cộng 1 còn 0 thì tổng trừ 1 nếu tổng
+	 * bằng 0 thì dãy có các số 0 và số 1 bằng nhau
+	 * 
+	 * thêm một cái mảng lưu lại mảng tìm được lớn nhất và
+	 * cho kích thước mảng này thừa thêm 1 đơn vị để dùng 
+	 * lưu kích thước mảng (vì không thích dùng mảng động)
+	 * 
+	 * đỡ phải thêm một biến int vào
+	 * 
+	 */
+	public static void bai7(int[] A,int sumtarget,int[] answer) {
+		boolean none = true;// biến kiểm tra có tồn tại dãy hay không để in không tồn tại
+		for(int i=0;i<A.length;i++) {
+			int sum = 0;
+			for(int j=i;j<A.length;j++) {
+				sum += (A[j] == 1) ? 1 : -1;
+				if(sum == sumtarget && j - i+1 > answer[answer.length-1]) {
+					none = false;
+					for(int k=0;k<=j-i;k++) {
+						answer[k]= A[i+k];
+					}
+					answer[answer.length-1] = j-i+1;
+				}
+			}
+		}
+		if(none) {
+			System.out.println("khong ton tai day co tong bang "+sumtarget);
+		}
+		else {
+			System.out.print("[");
+			for(int i=0;i<answer[answer.length-1];i++) {
+				System.out.print(" "+answer[i]);
+			}
+			System.out.println(" ]");
+		}
+	}
+	public static void testbai7() {
+		int[] A = {1,0,1,0,1,1,0,0,1,0,1,1,0,1,1,1,0};
+		int[] answer = new int[A.length+1];
+		System.out.println("***** bai 7.1: tim day lon nhat co tong 1 va 0 bang nhau");
+		bai7(A,0,answer);
+		int[] B = {1,1,1,1,1,1,1,1,1,1};
+		answer = new int[A.length+1];
+		System.out.println("***** bai 7.2: tim day lon nhat co tong 1 va 0 bang nhau ");
+		bai7(B,0,answer);
+	}
+	public static void bai8(int[] A) {
+		int max = 0;
+		for(int i = 0;i<A.length-1;i++)
+			for(int j=i+1;j<A.length;j++) {
+				if(A[i]*A[j] > max) {
+					max =A[i]*A[j]; 
+			}
+		}
+		
+		for(int i = 0;i<A.length-1;i++)
+			for(int j=i+1;j<A.length;j++) {
+				if(A[i]*A[j] == max) {
+					System.out.println("[ "+A[i] +" " + A[j]+" ]"); 
+			}
+		}
+	}
+	public static void testbai8() {
+		int[] A = {1,-9,-8,2,3,9,5};
+		System.out.println("bai 8: tìm hai số nguyên có tích lớn nhất trong mảng");
+		bai8(A);
+		
+	}
+	public static void bai9(int[] input ,int a,int b) {
+			if(a<b){
+			int i=a+1,j=b;
+			
+			for(;i<j+1;i++){
+				if(input[i]>input[a])
+					for(;j>i;j--)
+						{
+						if(input[j]<input[a]) {
+							swap(input,i,j);
+							break;
+							}
+						}
+				
+				if(i==j) break;
+			}
+				
+			if(input[a]<input[i]) i--;
+			swap(input,a,i);
+			
+			bai9(input,a,i-1);
+			bai9(input,i+1,b);
+			}
+	}
+	public static void swap(int[] A,int a,int b) {
+		int swap = A[a];
+		A[a] = A[b];
+		A[b] = swap;
+	}
+	public static void testbai9() {
+		int[] A = {1,9,6,5,8,4,3,2,5,61,4,5,2,1,5,4,1,2,5,4,1,2,5,8,9,6,5,2,3,6,5,8,10,9,45,12,45,12,3,59,48};
+		System.out.println("bai 9: quicksort");
+		bai9(A,0,A.length-1);
+		for(int i=0;i<A.length;i++)
+			System.out.print(" "+A[i]);
+	}
+	/* bài 10 không nhập thành một mảng mà chia thành hai phần
+	 * mảng A và B nên có thể mergesort vào mảng mergesortArray
+	 * rồi tách mảng này cho vào A và B
+	 * 
+	 * bài 11 cũng dùng mergesort nhưng lược bỏ giá trị 0
+	 * nên cũng ez
+	 * 
+	 */
+	public static void bai10(int[] A,int[] B) {
+		int[] mergeArray = new int[A.length+B.length]; // mảng sau khi nhập 2 mảng A và B
+		int i=0;
+		int j=0;
+		int k=0;
+		while(true) {
+			if(j == B.length||i==A.length)
+				break;
+			if(A[i] < B[j]) {
+				mergeArray[k++] = A[i++];
+			}
+			else {
+				mergeArray[k++] = B[j++];
+			}
+		}
+		if(A.length == i) {
+			for(;j<B.length;j++)
+				mergeArray[k++] = B[j];
+		}
+		else {
+			for(;i<A.length;i++)
+				mergeArray[k++] = A[i];
+		}
+		for(int l=0;l<mergeArray.length;l++)
+			System.out.print(" "+mergeArray[l]);
+	}
+	public static void testbai10() {
+		int[] A = {1,2,3,8,9,10,15,16,20};
+		int[] B = {2,3,4,6,9,12,13,16,17,21};
+		
+		System.out.println("bai 10: mergesort");
+		bai10(A,B);
+	}
+	/* đề : tìm vị trí của 0 để nếu thay 0 đó thành 1 thì được dãy
+	 * có số lượng số 1 liên tiếp là lớn nhất
+	 * 
+	 * ý tưởng: cho nó một biến boolean kiểu true khi duyệt các
+	 * số 1 liên tiếp mà gặp số 0 thì coi như nó là số 1 và boolean
+	 * thành false 
+	 * 
+	 */
+	public static void bai12(int[] A) {
+		int index = 0;
+		int max = 0;
+		for(int i=0;i<A.length;i++) {
+			boolean one = true; // biến cho phép thế giá trị 1 một lần
+			int count = 0;
+			int t = 0;// biến lưu lại giá trị tạm thời của chỉ số
+			for(int j=i;j<A.length;j++) {
+				if(A[j] == 1) {
+					count ++;
+				}
+				else if(one) {
+					one =false;
+					count ++;
+					t = j;
+				}
+				else break;
+			}
+			if(count > max ){
+				max = count;
+				index = t;
+			}
+		}
+		System.out.println("index = "+index+"\nmax   = " + max);
+	}
+	public static void testbai12() {
+		int[] data = {0,1,0,1,0,1,1,1,0,1,1,0,0,1,1,1,1,1,1,1,1,0};
+		System.out.println("bai 12: tim vi tri so 0 de neu thay 1 thi day 1 lon nhat");
+		bai12(data);
+	}
+	/* sáo trộn phần tử từ cuối cùng lên đầu thoy
+	 * 
+	 */
+	public static void bai13(int[] A) {
+		for(int i=A.length-1;i>0;i--) {
+			int r = (int)(Math.random()*i);
+			swap(A, i, r);
+		}
+	}
+	public static void testbai13() {
+		int[] A = {0,1,2,3,4,5,6,7,8,9};
+		System.out.println("bai 13:");
+		bai13(A);
+		for(int i=0;i<A.length;i++)
+			System.out.print(" "+A[i]);
+		System.out.println();
+		bai13(A);
+		for(int i=0;i<A.length;i++)
+			System.out.print(" "+A[i]);
+		
+	}
+	/* dựa vào tổng dãy thoy
+	 * 
+	 */
+	public static void bai15(int[] A) {
+		int sum = 0;
+		for(int i: A) {
+			sum += i;
+		}
+		int left = 0;
+		for(int i=0;i<A.length;i++) {
+			if(left == sum - left - A[i]) {
+				System.out.println("diem can bang la: "+ i);
+			}
+			left += A[i];
+			
+		}
+	}
+	public static void testbai15() {
+		int[] data = {0,1,2,-3,0,4,5,-8,0,-1,0,3,2,-5,0};
+		System.out.println("bai 15:");
+		bai15(data);
+		
 	}
 }
